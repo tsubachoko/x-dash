@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import type Phaser from 'phaser';
 import { createGame } from '../game/createGame';
 
-export function GameCanvas() {
+export const GameCanvas = memo(function GameCanvas() {
   const hostRef = useRef<HTMLDivElement>(null);
   const gameRef = useRef<Phaser.Game | null>(null);
 
@@ -17,4 +17,4 @@ export function GameCanvas() {
   }, []);
 
   return <div className="game-host" ref={hostRef} />;
-}
+});
