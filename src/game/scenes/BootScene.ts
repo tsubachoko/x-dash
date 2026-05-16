@@ -20,6 +20,7 @@ export class BootScene extends Phaser.Scene {
     const KC = Phaser.Input.Keyboard.KeyCodes;
     this.input.keyboard?.addCapture([
       KC.SPACE, KC.Z, KC.X, KC.C, KC.SHIFT, KC.ESC,
+      KC.J, KC.K, KC.L, KC.P,
       KC.UP, KC.DOWN, KC.LEFT, KC.RIGHT,
       KC.W, KC.A, KC.S, KC.D,
       KC.ENTER,

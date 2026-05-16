@@ -28,10 +28,10 @@ export class TitleScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     const controls = [
-      'SPACE / Z   ジャンプ (長押しで高く)',
-      'SHIFT / X   ダッシュ (押し続けで継続)',
-      'C           攻撃 / チャージショット',
-      'ESC         ポーズ',
+      'Z / J         ジャンプ (長押しで高く)',
+      'SHIFT / X / K ダッシュ (押し続けで継続)',
+      'C / L / SPACE 攻撃 / チャージショット',
+      'ESC / P       ポーズ',
     ];
     this.add.text(GAME_WIDTH / 2, 320, controls.join('\n'), {
       fontFamily: 'monospace',

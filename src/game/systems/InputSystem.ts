@@ -11,45 +11,48 @@ export interface InputState {
 }
 
 export class InputSystem {
-  private keys: {
-    jumpA: Phaser.Input.Keyboard.Key;
-    jumpB: Phaser.Input.Keyboard.Key;
-    dashA: Phaser.Input.Keyboard.Key;
-    dashB: Phaser.Input.Keyboard.Key;
-    attack: Phaser.Input.Keyboard.Key;
-    pause: Phaser.Input.Keyboard.Key;
-  };
+  private jumpKeys: Phaser.Input.Keyboard.Key[];
+  private dashKeys: Phaser.Input.Keyboard.Key[];
+  private attackKeys: Phaser.Input.Keyboard.Key[];
+  private pauseKeys: Phaser.Input.Keyboard.Key[];
 
   constructor(scene: Phaser.Scene) {
     const kb = scene.input.keyboard!;
-    this.keys = {
-      jumpA: kb.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
-      jumpB: kb.addKey(Phaser.Input.Keyboard.KeyCodes.Z),
-      dashA: kb.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT),
-      dashB: kb.addKey(Phaser.Input.Keyboard.KeyCodes.X),
-      attack: kb.addKey(Phaser.Input.Keyboard.KeyCodes.C),
-      pause: kb.addKey(Phaser.Input.Keyboard.KeyCodes.ESC),
-    };
+    const KC = Phaser.Input.Keyboard.KeyCodes;
+    this.jumpKeys = [
+      kb.addKey(KC.Z),
+      kb.addKey(KC.J),
+    ];
+    this.dashKeys = [
+      kb.addKey(KC.SHIFT),
+      kb.addKey(KC.X),
+      kb.addKey(KC.K),
+    ];
+    this.attackKeys = [
+      kb.addKey(KC.C),
+      kb.addKey(KC.L),
+      kb.addKey(KC.SPACE),
+    ];
+    this.pauseKeys = [
+      kb.addKey(KC.ESC),
+      kb.addKey(KC.P),
+    ];
   }
 
   read(): InputState {
     const JustDown = Phaser.Input.Keyboard.JustDown;
     const JustUp = Phaser.Input.Keyboard.JustUp;
-    const jumpDown = this.keys.jumpA.isDown || this.keys.jumpB.isDown;
-    const jumpPressed = JustDown(this.keys.jumpA) || JustDown(this.keys.jumpB);
-    const jumpReleased = JustUp(this.keys.jumpA) || JustUp(this.keys.jumpB);
-    const dashDown = this.keys.dashA.isDown || this.keys.dashB.isDown;
-    const dashPressed = JustDown(this.keys.dashA) || JustDown(this.keys.dashB);
-    const attackDown = this.keys.attack.isDown;
-    const pausePressed = JustDown(this.keys.pause);
+    const anyDown = (keys: Phaser.Input.Keyboard.Key[]) => keys.some(k => k.isDown);
+    const anyJustDown = (keys: Phaser.Input.Keyboard.Key[]) => keys.some(k => JustDown(k));
+    const anyJustUp = (keys: Phaser.Input.Keyboard.Key[]) => keys.some(k => JustUp(k));
     return {
-      jumpDown,
-      jumpPressed,
-      jumpReleased,
-      dashDown,
-      dashPressed,
-      attackDown,
-      pausePressed,
+      jumpDown: anyDown(this.jumpKeys),
+      jumpPressed: anyJustDown(this.jumpKeys),
+      jumpReleased: anyJustUp(this.jumpKeys),
+      dashDown: anyDown(this.dashKeys),
+      dashPressed: anyJustDown(this.dashKeys),
+      attackDown: anyDown(this.attackKeys),
+      pausePressed: anyJustDown(this.pauseKeys),
     };
   }
 }

@@ -35,7 +35,7 @@ export class PauseScene extends Phaser.Scene {
     );
 
     this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 100,
-      '操作: SPACE/Z ジャンプ  SHIFT/X ダッシュ  C 攻撃/チャージ  ESC ポーズ', {
+      '操作: Z/J ジャンプ  SHIFT/X/K ダッシュ  C/L/SPACE 攻撃/チャージ  ESC/P ポーズ', {
       fontFamily: 'monospace',
       fontSize: '13px',
       color: '#88aacc',
