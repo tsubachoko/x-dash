@@ -174,7 +174,7 @@ export class GameScene extends Phaser.Scene {
     this.hudXpBar.fillStyle(0xffe066, 1).fillRect(20, 76, 220 * xpRatio, 6);
     this.hudLevelText.setText(`Lv.${this.stats.level}   EXP ${this.stats.xp}/${this.stats.xpToNext}`);
 
-    this.hudDistanceText.setText(`${Math.floor(this.scrollSystem.distance)} m`);
+    this.hudDistanceText.setText(`${Math.floor(this.scrollSystem.meters)} m`);
 
     // Charge bar above player
     this.hudChargeBar.clear();
@@ -242,8 +242,8 @@ export class GameScene extends Phaser.Scene {
       this.spawnIndex++;
     }
 
-    // Boss trigger
-    if (!this.bossActive && !this.bossPendingReward && this.scrollSystem.distance >= this.nextBossDistance) {
+    // Boss trigger (m基準)
+    if (!this.bossActive && !this.bossPendingReward && this.scrollSystem.meters >= this.nextBossDistance) {
       this.startBoss();
     }
 
@@ -534,13 +534,14 @@ export class GameScene extends Phaser.Scene {
   }
 
   private gameOver() {
+    const meters = Math.floor(this.scrollSystem.meters);
     eventBus.emit('game:over', {
-      distance: Math.floor(this.scrollSystem.distance),
+      distance: meters,
       bossesDefeated: this.stats.bossesDefeated,
       level: this.stats.level,
     });
     this.scene.start('Result', {
-      distance: Math.floor(this.scrollSystem.distance),
+      distance: meters,
       bossesDefeated: this.stats.bossesDefeated,
       level: this.stats.level,
     });

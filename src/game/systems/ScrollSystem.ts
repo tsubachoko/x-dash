@@ -27,6 +27,11 @@ export class ScrollSystem {
       .setScrollFactor(0);
   }
 
+  /** 進行距離をメートル表示に換算した値。1m = 10内部距離単位。 */
+  get meters(): number {
+    return this.distance / 10;
+  }
+
   setBaseSpeed(speed: number) {
     this.baseSpeed = speed;
   }
