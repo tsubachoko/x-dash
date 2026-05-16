@@ -45,6 +45,12 @@ export const GAME_BALANCE = {
     bossArenaReturnSpeed: 200,
     /** ボス戦中、プレイヤーが PLAYER_X から前進できる最大距離 (px)。ボスへ近づきすぎないよう制限する。 */
     bossArenaMaxAdvance: 320,
+    /** 通常時、ダッシュで前進する速度 (px/s)。スクロール加速と併用するため控えめ。 */
+    runDashForwardSpeed: 200,
+    /** 通常時、ダッシュを離した後に PLAYER_X へ戻る速度 (px/s)。 */
+    runDashReturnSpeed: 300,
+    /** 通常時、ダッシュで前方へ進める最大距離 (px)。プレイヤー1体弱分程度の「やや前進」演出。 */
+    runDashMaxAdvance: 20,
   },
 
   weapon: {

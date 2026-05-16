@@ -222,7 +222,7 @@ export class GameScene extends Phaser.Scene {
 
     const canMove = !this.player.state2.dead;
     this.player.update(time, delta, inputState, canMove);
-    this.updateBossArenaMovement();
+    this.updatePlayerForwardOffset();
 
     // Scroll multiplier from dash
     if (this.player.state2.dead) {
@@ -299,23 +299,28 @@ export class GameScene extends Phaser.Scene {
     e.spawn(def.kind, GAME_WIDTH + 60, y, time);
   }
 
-  private updateBossArenaMovement() {
+  private updatePlayerForwardOffset() {
     const body = this.player.body as Phaser.Physics.Arcade.Body;
-    if (!this.bossActive || this.player.state2.dead) {
-      // Outside boss fight: keep player locked at PLAYER_X.
+    if (this.player.state2.dead) {
       if (this.player.x !== PLAYER_X) this.player.x = PLAYER_X;
       body.setVelocityX(0);
       return;
     }
-    const maxX = PLAYER_X + GAME_BALANCE.player.bossArenaMaxAdvance;
+    const p = GAME_BALANCE.player;
+    const isBoss = this.bossActive;
+    const maxAdvance = isBoss ? p.bossArenaMaxAdvance : p.runDashMaxAdvance;
+    const forwardSpeed = isBoss ? p.bossArenaForwardSpeed : p.runDashForwardSpeed;
+    const returnSpeed = isBoss ? p.bossArenaReturnSpeed : p.runDashReturnSpeed;
+    const maxX = PLAYER_X + maxAdvance;
+
     if (this.player.state2.dashing) {
-      body.setVelocityX(GAME_BALANCE.player.bossArenaForwardSpeed);
+      body.setVelocityX(forwardSpeed);
     } else if (this.player.x > PLAYER_X) {
-      body.setVelocityX(-GAME_BALANCE.player.bossArenaReturnSpeed);
+      body.setVelocityX(-returnSpeed);
     } else {
       body.setVelocityX(0);
     }
-    // Clamp to arena bounds.
+    // Clamp.
     if (this.player.x < PLAYER_X) {
       this.player.x = PLAYER_X;
       if (body.velocity.x < 0) body.setVelocityX(0);
