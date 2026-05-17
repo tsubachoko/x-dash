@@ -17,6 +17,8 @@ export const GAME_BALANCE = {
     dashSpeedMultiplier: 1.8,
     /** ダッシュ継続時間 (ms)。ダッシュ距離ステータスで延長される。 */
     dashDurationMs: 600,
+    /** ダッシュ開始からこの時間は、ダッシュキーを離してもダッシュ状態を維持する (ms)。 */
+    dashMinHoldMs: 150,
     /** ダッシュ終了後、次のダッシュを出せるまでの後隙 (ms)。ダッシュジャンプ時は発生しない。 */
     dashRecoveryMs: 120,
     /** 被弾後の無敵時間 (ms)。この間は再被弾しない。 */

@@ -28,6 +28,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   jumpHoldActive = false;
   dashStartedAt = 0;
   dashEndsAt = 0;
+  /** この時刻まではダッシュキーを離してもダッシュを継続する。 */
+  dashMinHoldUntil = 0;
   dashRecoveryUntil = 0;
   dashConsumedJumpCarry = false;
   /** ダッシュ開始時に空中だったか。trueなら高度固定の「エアダッシュ」になる。 */
@@ -86,9 +88,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.state2.charging = this.chargeProgress > 0 && this.chargeProgress < chargeFrames;
     this.state2.chargeReady = this.chargeProgress >= chargeFrames;
 
-    // Dash handling
+    // Dash handling.
+    // Within dashMinHoldMs after startDash, a key release does not end the dash —
+    // the dash sticks for at least that window. After it, the usual rules apply.
     if (this.state2.dashing) {
-      const dashOver = !input.dashDown || time > this.dashEndsAt;
+      const heldOrLocked = input.dashDown || time < this.dashMinHoldUntil;
+      const dashOver = !heldOrLocked || time > this.dashEndsAt;
       if (dashOver) {
         this.endDash(time);
       }
@@ -179,6 +184,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.state2.dashing = true;
     this.dashStartedAt = time;
     this.dashEndsAt = time + this.stats.computed().dashDurationMs;
+    this.dashMinHoldUntil = time + GAME_BALANCE.player.dashMinHoldMs;
     this.dashConsumedJumpCarry = false;
     this.dashStartedInAir = !this.isGrounded();
   }
