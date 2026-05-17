@@ -224,14 +224,15 @@ export class GameScene extends Phaser.Scene {
     this.player.update(time, delta, inputState, canMove);
     this.updatePlayerForwardOffset();
 
-    // Scroll multiplier from dash
+    // Scroll multiplier from dash (carries through air after dash ends until landing)
     if (this.player.state2.dead) {
       this.scrollSystem.setMultiplier(0.2);
     } else if (this.bossActive) {
       this.scrollSystem.setMultiplier(0);
     } else {
       this.scrollSystem.setBaseSpeed(this.stats.computed().moveSpeed);
-      this.scrollSystem.setMultiplier(this.player.state2.dashing ? GAME_BALANCE.player.dashSpeedMultiplier : 1);
+      const dashSpeedState = this.player.state2.dashing || this.player.airDashCarry;
+      this.scrollSystem.setMultiplier(dashSpeedState ? GAME_BALANCE.player.dashSpeedMultiplier : 1);
     }
     this.scrollSystem.update(delta);
 
@@ -313,7 +314,10 @@ export class GameScene extends Phaser.Scene {
     const returnSpeed = isBoss ? p.bossArenaReturnSpeed : p.runDashReturnSpeed;
     const maxX = PLAYER_X + maxAdvance;
 
-    if (this.player.state2.dashing) {
+    // Air-dash carry keeps the forward push active until the player lands,
+    // so dash-jumps / air-dashes hold the advanced X until touchdown.
+    const dashSpeedState = this.player.state2.dashing || this.player.airDashCarry;
+    if (dashSpeedState) {
       body.setVelocityX(forwardSpeed);
     } else if (this.player.x > PLAYER_X) {
       body.setVelocityX(-returnSpeed);

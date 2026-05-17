@@ -30,6 +30,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   dashEndsAt = 0;
   dashRecoveryUntil = 0;
   dashConsumedJumpCarry = false;
+  /** ダッシュ開始時に空中だったか。trueなら高度固定の「エアダッシュ」になる。 */
+  dashStartedInAir = false;
+  /** ダッシュ終了後、空中にいる間は横方向だけダッシュ状態を維持するためのフラグ。着地でクリア。 */
+  airDashCarry = false;
   airActionsUsed = 0;
   chargeProgress = 0;
   attackCooldownUntil = 0;
@@ -92,6 +96,16 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       this.startDash(time);
     }
 
+    // Air dash: lock altitude while a dash that started in mid-air is active.
+    // Cancels any in-progress jump hold so the player stops rising instantly.
+    if (this.state2.dashing && this.dashStartedInAir) {
+      body.setAllowGravity(false);
+      body.setVelocityY(0);
+      this.jumpHoldActive = false;
+    } else {
+      body.setAllowGravity(true);
+    }
+
     // Jump handling (ground)
     if (!stunned && canMove && input.jumpPressed) {
       if (this.isGrounded()) {
@@ -130,6 +144,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       this.y = GROUND_Y;
       body.setVelocityY(0);
       this.airActionsUsed = 0;
+      this.airDashCarry = false;
     }
 
     // Damage flash
@@ -165,6 +180,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.dashStartedAt = time;
     this.dashEndsAt = time + this.stats.computed().dashDurationMs;
     this.dashConsumedJumpCarry = false;
+    this.dashStartedInAir = !this.isGrounded();
   }
 
   private endDash(time: number) {
@@ -173,6 +189,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       this.dashRecoveryUntil = time + GAME_BALANCE.player.dashRecoveryMs;
     } else {
       this.dashRecoveryUntil = 0;
+    }
+    // If we end the dash while airborne (air-dash or dash-jump),
+    // keep the dash-speed posture until the player lands.
+    if (!this.isGrounded()) {
+      this.airDashCarry = true;
     }
   }
 
