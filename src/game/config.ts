@@ -16,7 +16,7 @@ export const GAME_BALANCE = {
     /** ダッシュ中のスクロール速度倍率。dashSpeed = baseMoveSpeed × この値。 */
     dashSpeedMultiplier: 1.8,
     /** ダッシュ継続時間 (ms)。ダッシュ距離ステータスで延長される。 */
-    dashDurationMs: 600,
+    dashDurationMs: 60,
     /** ダッシュ開始からこの時間は、ダッシュキーを離してもダッシュ状態を維持する (ms)。 */
     dashMinHoldMs: 15,
     /** ダッシュ終了後、次のダッシュを出せるまでの後隙 (ms)。ダッシュジャンプ時は発生しない。 */
